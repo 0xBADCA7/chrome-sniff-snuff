@@ -1,8 +1,52 @@
-<html>
-    <head>
-        <title>SniffSnuff</title>
-    </head>
-    <body>
-        <script src="sniffsnuff.js"></script>
-    </body>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>SniffSnuff for Chrome</title>
+
+    <!-- Bootstrap -->
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  </head>
+  <body>
+    <div class="container container-fluid">
+        <div class="row row-fluid">
+                <h2>Search</h2>
+                <form id="formSearch">
+                    <div class="form-group">
+                        <label for="searchKeyword">Search terms</label>
+                        <input id="searchKeyword" class="form-control" type="text" placeholder="Keywords" value="">
+                    </div>
+                    <button id="btnSearch" type="submit" class="btn btn-default btn-md">Search</button>
+                    <span class="text-muted" id="statusText">Idle. Hit "Search" to start listening.</span>
+                </form>
+        </div>
+        <div class="row row-fluid">
+                <h2>Results</h2>
+                <h4>
+                <button id="btnClearAll" type="button" class="btn btn-default btn-xs">Clear all</button>
+                </h4>
+                <table id="tableResults" class="table">
+                    <thead>
+                        <tr>
+                            <th>Match</th>
+                            <th>Where</th>
+                            <th>Context</th>
+                            <th>Resource</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="initCell" colspan="3">No results</td>
+                        </tr>
+                    </tbody>
+                </table>
+        </div>
+    </div>
+    <!-- <script src="bootstrap/js/bootstrap.min.js"></script> -->
+    <script src="sniffsnuff.js"></script>
+  </body>
 </html>
