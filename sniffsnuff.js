@@ -17,6 +17,8 @@ chrome.devtools.network.onRequestFinished.addListener(
 	{
 		var cookies, headers;
 
+		fnUpdateSearch();
+
 		if (!Request || !search.active)
 			return false;
 
@@ -61,7 +63,7 @@ chrome.devtools.network.onRequestFinished.addListener(
 			headers = Request.response.headers;
 			for (id in headers)
 			{
-				fnParseContent(cookies[id], Request.request.url, 'Headers');
+				fnParseContent(headers[id], Request.request.url, 'Headers');
 			}
 
 			headers = [];
@@ -151,10 +153,10 @@ var fnDoSearch = function(what, where, uri, context)
 		td3 = document.createElement('td');
 		td4 = document.createElement('td');
 
-		td1.innerHTML = fnWrapTag(match, 'code');
-		td2.innerHTML = fnWrapTag(location, 'textarea', 'form-control');
-		td3.innerText = context;
-		td4.innerHTML = fnWrapTag(uri, 'textarea', 'form-control');
+		td3.innerHTML = fnWrapTag(match, 'code');
+		td4.innerHTML = fnWrapTag(location, 'textarea', 'form-control');
+		td1.innerText = context;
+		td2.innerHTML = fnWrapTag(uri, 'a', 'resource-uri');
 
 		tr.appendChild(td1);
 		tr.appendChild(td2);
@@ -162,6 +164,8 @@ var fnDoSearch = function(what, where, uri, context)
 		tr.appendChild(td4);
 
 		tableResults.getElementsByTagName('tbody')[0].appendChild(tr);
+
+		fnBindResourceURILinks();
 
 		//@debug
 		console.debug("Found " +
@@ -175,7 +179,29 @@ var fnDoSearch = function(what, where, uri, context)
 };
 
 
+/**
+ * Adds a click event to resource links
+ * to open them in a DevTools panel.
+ */
+var fnBindResourceURILinks = function()
+{
+	var i, elems =
+		document.getElementsByClassName('resource-uri');
 
+	for (i=0; i < elems.length; i++)
+	{
+		elems[i]
+			.addEventListener('click', cbOpenResourceURI);
+	}
+};
+
+
+var cbOpenResourceURI = function(event)
+{
+	var uri = event.toElement.href;
+	event.preventDefault();
+	chrome.devtools.panels.openResource(uri);
+};
 
 
 /**
@@ -190,8 +216,9 @@ var fnWrapTag = function(input, tag, className)
 	tag && (tag = tag.toString());
 	className && (className = className.toString());
 	
+	// Little monster here
 	return '<' +
-		   tag +
+		   (tag === 'a' ? tag + ' href="' + input + '"' : tag)  +
 		   (className ? ' class="' + className + '"' : '') +
 		   '>' +
 		   input +
@@ -199,13 +226,53 @@ var fnWrapTag = function(input, tag, className)
 }
 
 
-function cbDocumentReady()
+/**
+ * Populates the search options through the
+ * UI controls
+ */
+var fnUpdateSearch = function()
+{
+	
+	options =
+	{
+		monitorRequests:
+			document.getElementById('cboxMonitorRequests').checked || false,
+
+		monitorResponses:
+			document.getElementById('cboxMonitorResponses').checked || false,
+
+		monitorHeaders:
+			document.getElementById('cboxMonitorHeaders').checked || false,
+
+		monitorCookies:
+			document.getElementById('cboxMonitorCookies').checked || false,
+
+		monitorURLs:
+			document.getElementById('cboxMonitorURLs').checked || false,
+
+		ignoreCase:
+			document.getElementById('cboxIgnoreCase').checked || false
+	};
+};
+
+
+var cbDocumentReady = function()
 {
 	console.clear();
 	console.debug("SniffSnuff is loaded and ready");
 
 	fnListenUIEvents();
-}
+	fnInitTheme();
+};
+
+
+/**
+ * Initiates some of the Material theme components
+ */
+var fnInitTheme = function()
+{
+	$.material.init();
+};
 
 
 var fnListenUIEvents = function()
@@ -216,6 +283,7 @@ var fnListenUIEvents = function()
 	btnSearch.addEventListener('click', cbBtnSearch);
 	btnClearAll.addEventListener('click', cbBtnClearAll);
 };
+
 
 var cbBtnClearAll = function(event)
 {
@@ -233,8 +301,11 @@ var cbBtnSearch = function(event)
 	var tableResults = document.getElementById('tableResults');
 	var statusText = document.getElementById('statusText');
 
+	/* Set search options */
+	fnUpdateSearch();
+
 	//console.debug(event);
-	event.preventDefault(event);
+	event.preventDefault();
 
 	if (search.active)
 	{

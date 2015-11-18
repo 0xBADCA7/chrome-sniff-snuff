@@ -10,32 +10,77 @@
     <!-- Bootstrap -->
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
+    <!-- Bootstrap theme -->
+    <link href="bootstrap/material-theme/css/roboto.min.css" rel="stylesheet">
+    <link href="bootstrap/material-theme/css/material.min.css" rel="stylesheet">
+    <link href="bootstrap/material-theme/css/ripples.min.css" rel="stylesheet">
+
   </head>
   <body>
     <div class="container container-fluid">
         <div class="row row-fluid">
+                <br>
                 <h2>Search</h2>
-                <form id="formSearch">
-                    <div class="form-group">
-                        <label for="searchKeyword">Search terms</label>
-                        <input id="searchKeyword" class="form-control" type="text" placeholder="Keywords" value="">
+                <form id="formSearch" class="row row-fluid">
+                    <div class="form-group col-sm-9">
+                        <input id="searchKeyword" class="form-control floating-label" type="search" data-hint="You can use the options below to control where to look for this string" placeholder="Keywords" value="">
                     </div>
-                    <button id="btnSearch" type="submit" class="btn btn-default btn-md">Search</button>
-                    <span class="text-muted" id="statusText">Idle. Hit "Search" to start listening.</span>
+                    <div class="form-group col-sm-3">
+                      <button id="btnSearch" type="submit" class="btn btn-info btn-block">
+                      <!--
+                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                      -->
+                        &nbsp;Search
+                      </button>
+                    </div>
+                    <div class="form-group col-sm-12">
+                      <span class="text-muted" id="statusText">Idle. Hit "Search" to start listening.</span>
+                    </div>
+                    
+                    <div class="checkbox checkbox-inline">
+                        <label>
+                          <input id="cboxIgnoreCase" type="checkbox">&nbsp;Case insensitive
+                        </label>
+                        &nbsp;
+                        <label>
+                          <input id="cboxMonitorRequests" type="checkbox">&nbsp;Monitor requests
+                        </label>
+                        &nbsp;
+                        <label>
+                          <input id="cboxMonitorResponses" type="checkbox">&nbsp;Monitor responses
+                        </label>
+                        &nbsp;
+                        <label>
+                          <input id="cboxMonitorCookies" type="checkbox">&nbsp;Monitor cookies
+                        </label>
+                        &nbsp;
+                        <label>
+                          <input id="cboxMonitorURLs" type="checkbox">&nbsp;Monitor URLs
+                        </label>
+                        &nbsp;
+                        <label>
+                          <input id="cboxMonitorHeaders" type="checkbox">&nbsp;Monitor headers
+                        </label>
+                    </div>
                 </form>
         </div>
+        <br>
+        <br>
         <div class="row row-fluid">
                 <h2>Results</h2>
                 <h4>
-                <button id="btnClearAll" type="button" class="btn btn-default btn-xs">Clear all</button>
+                <button id="btnClearAll" type="button" class="btn btn-warning btn-xs">
+                  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                  &nbsp;Clear all
+                </button>
                 </h4>
                 <table id="tableResults" class="table">
                     <thead>
                         <tr>
-                            <th>Match</th>
-                            <th>Where</th>
                             <th>Context</th>
                             <th>Resource</th>
+                            <th>Keyword</th>
+                            <th>Match</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,7 +91,10 @@
                 </table>
         </div>
     </div>
-    <!-- <script src="bootstrap/js/bootstrap.min.js"></script> -->
     <script src="sniffsnuff.js"></script>
+    <script src="bootstrap/js/jquery.min.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="bootstrap/material-theme/js/ripples.min.js"></script>
+    <script src="bootstrap/material-theme/js/material.min.js"></script>
   </body>
 </html>
