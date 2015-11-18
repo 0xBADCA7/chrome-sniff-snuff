@@ -323,7 +323,7 @@ var cbBtnSearch = function(event)
 
 		statusText.innerText = 'Looking for "' +
 			search.keyword +
-			'". Listening on traffic...';
+			'". Listening in on traffic...';
 
 		search.active = true;
 		event.toElement.innerText = 'Stop';

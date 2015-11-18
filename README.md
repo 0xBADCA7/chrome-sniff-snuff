@@ -2,6 +2,9 @@
 
 SniffSnuff is a simple Google Chrome extension that helps monitor network requests as they are dispatched or returned back. SniffSnuff *is not a tamper tool* in the first place. The aim was to have a handy tool to see if canaries leak somewhere in the webapp code while testing for vulnerabilities. For example, a part of query string might end up in the Javascript code returned with the response body and even make an XMLHttpRequest containing it. This is exactly where SniffSnuff comes in. Useful for web application analysis without firing up Burp or ZAP. No proxy hastle and scope madness.
 
+## Looks
+![Screenshot](sniffsnuff.png)
+
 ## Options
 There are options to look for canaries in request/response URLs, cookies, headers and request/response body.
 
@@ -13,6 +16,7 @@ There are options to look for canaries in request/response URLs, cookies, header
 | Monitor cookies   	| Look for keyword in cookies sent or received                                                                            	|
 | Monitor URLs      	| Look for keyword in the request URLs (e.g. XMLHttpRequest)                                                              	|
 | Monitor headers   	| Look for keyword among headers (request or response – depends on the "Monitor requests" and "Monitor responses" options 	|
+
 
 # MIT License
 Copyright (c) 2015 Netcat (@0xBADCA7)
