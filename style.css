@@ -1,0 +1,8 @@
+/* Shorten the URLS */
+#tableResults td > a
+{
+	max-width: 50%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: block;
+}
