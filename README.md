@@ -18,6 +18,13 @@ There are options to look for canaries in request/response URLs, cookies, header
 | Monitor headers   	| Look for keyword among headers (request or response – depends on the "Monitor requests" and "Monitor responses" options 	|
 
 
+# Installation
+
+Two ways:
+1. Go to `chrome://extensions` and enable the *developer mode* if not yet done. Hit the "Load unpacked extension" button and provide the path to the sources of the master branch
+
+2. Go to `chrome://extensions` and drag-n-drop the .crx build from the `release` branch, `build` directory.
+
 # MIT License
 Copyright (c) 2015 Netcat (@0xBADCA7)
 

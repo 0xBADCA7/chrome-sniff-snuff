@@ -1,7 +1,7 @@
 /**
  * Local print out utility.
- * @param {array} args - argument list to print out.
- * @param {object} args - argument list to print out.
+ * @param {array} args Argument list to print out.
+ * @param {object} args Argument list to print out.
  */
 var out = function(args)
 {
@@ -12,6 +12,51 @@ var out = function(args)
 };
 
 
+/**
+ * Parses headers
+ * @param {object} Request A Request object from chrome.devtools.network event
+ */
+var parseHeaders = function(Request, scope)
+{
+	headers = Request.response.headers;
+	for (id in headers)
+	{
+		fnParseContent(headers[id], Request.request.url, 'Headers received');
+	}
+
+	headers = [];
+
+	headers = Request.request.headers;
+	for (id in headers)
+	{
+		fnParseContent(headers[id], Request.request.url, 'Headers sent');
+	}
+};
+
+
+/**
+ * Parses cookies
+ * @param {object} Request A Request object from chrome.devtools.network event
+ */
+var parseCookies = function(Request, scope)
+{
+	cookies = Request.response.cookies;
+	for (id in cookies)
+	{
+		fnParseContent(cookies[id], Request.request.url, 'Cookies received');
+	}
+
+	cookies = [];
+
+	cookies = Request.request.cookies;
+	for (id in cookies)
+	{
+		fnParseContent(cookies[id], Request.request.url, 'Cookies sent');
+	}
+};
+
+
+// onRequestFinished
 chrome.devtools.network.onRequestFinished.addListener(
 	function(Request)
 	{
@@ -24,11 +69,6 @@ chrome.devtools.network.onRequestFinished.addListener(
 
 		//console.debug(Request);
 
-		if (options.monitorURLs)
-		{
-			fnParseContent(Request.request.url, Request.request.url, 'Query string');
-		}
-
 		if (options.monitorResponses)
 		{
 			Request.getContent(
@@ -39,41 +79,21 @@ chrome.devtools.network.onRequestFinished.addListener(
 			);
 		}
 
-		// Parse cookies
-		if (options.monitorCookies)
+		if (options.monitorRequests)
 		{
-			cookies = Request.response.cookies;
-			for (id in cookies)
-			{
-				fnParseContent(cookies[id], Request.request.url, 'Cookies');
-			}
-
-			cookies = [];
-
-			cookies = Request.request.cookies;
-			for (id in cookies)
-			{
-				fnParseContent(cookies[id], Request.request.url, 'Cookies');
-			}
+			Request.getContent(
+				function(content)
+				{
+					fnParseContent(content, Request.request.url, 'Request body');
+				}
+			);
 		}
+
+		// Parse cookies
+		options.monitorCookies && parseCookies(Request);
 
 		// Parse headers
-		if (options.monitorHeaders)
-		{
-			headers = Request.response.headers;
-			for (id in headers)
-			{
-				fnParseContent(headers[id], Request.request.url, 'Headers');
-			}
-
-			headers = [];
-
-			headers = Request.request.headers;
-			for (id in headers)
-			{
-				fnParseContent(headers[id], Request.request.url, 'Headers');
-			}
-		}
+		options.monitorHeaders && parseHeaders(Request);
 	}
 );
 
@@ -95,12 +115,7 @@ chrome.devtools.network.onNavigated.addListener(
 var fnParseContent = function(content, uri, context)
 {
 	console.debug(context);
-
-	if (content)
-	{
-		//console.debug("This is the request body: ", body.substring(0, 15));
-		fnDoSearch(search.keyword, content, uri, context);
-	}
+	content && fnDoSearch(search.keyword, content, uri, context);
 };
 
 
@@ -215,7 +230,7 @@ var fnWrapTag = function(input, tag, className)
 {
 	tag && (tag = tag.toString());
 	className && (className = className.toString());
-	
+
 	// Little monster here
 	return '<' +
 		   (tag === 'a' ? tag + ' href="' + input + '"' : tag)  +
@@ -232,7 +247,7 @@ var fnWrapTag = function(input, tag, className)
  */
 var fnUpdateSearch = function()
 {
-	
+
 	options =
 	{
 		monitorRequests:
@@ -279,7 +294,7 @@ var fnListenUIEvents = function()
 {
 	var btnSearch = document.getElementById('btnSearch');
 	var btnClearAll = document.getElementById('btnClearAll');
-	
+
 	btnSearch.addEventListener('click', cbBtnSearch);
 	btnClearAll.addEventListener('click', cbBtnClearAll);
 };
@@ -314,7 +329,7 @@ var cbBtnSearch = function(event)
 		event.toElement.className =
 			event.toElement.className.replace(/ btn-danger/gm, '');
 
-		statusText.innerText = 
+		statusText.innerText =
 			'Idle. Hit "Search" to start listening.';
 	}
 	else
@@ -332,7 +347,7 @@ var cbBtnSearch = function(event)
 };
 
 
-var options = 
+var options =
 {
 	monitorRequests: true,
 	monitorResponses: true,
@@ -343,7 +358,7 @@ var options =
 };
 
 
-var search = 
+var search =
 {
 	keyword: document.getElementById('keyword'),
 
